@@ -42,7 +42,7 @@ jobs:
           sudo apt install valgrind
           echo "Installed valgrind"
         env:
-        X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
+          X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
 
       - name: Tests & Coverage Generation (x86_64 only)
         if: ${{ env.TARGET == 'x86_64' }}
