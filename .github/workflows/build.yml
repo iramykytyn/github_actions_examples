@@ -50,6 +50,6 @@ jobs:
           echo "Run tests from here"
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == true}}
+        if: ${{ X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == true}}
         run: |
           echo "Check xml from here"
