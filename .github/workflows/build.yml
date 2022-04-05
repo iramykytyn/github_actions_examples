@@ -41,6 +41,7 @@ jobs:
         run: |
           sudo apt install valgrind
           echo "Installed valgrind"
+          echo env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND
         env:
           X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
 
@@ -50,6 +51,6 @@ jobs:
           echo "Run tests from here"
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}
+        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true'}}
         run: |
           echo "Check xml from here"
