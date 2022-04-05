@@ -1,0 +1,51 @@
+name: "Linux SDK Build"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - dev
+
+env:
+  X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
+  BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
+
+jobs:
+  build:
+    name: "Build SDK"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64
+          - target: arm64-v8a
+            compiler: aarch64-linux-gnu
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+
+      - name: Set up environment
+        run: |
+          sudo apt update
+          sudo apt install -y libev-dev
+          echo "CROSS=${{ matrix.compiler }}" >> $GITHUB_ENV
+          echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
+
+      - name: Tests & Coverage Generation (x86_64 only)
+#        if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
+#
+        if: ${{ env.TARGET == 'x86_64' }}
+        run: |
+          sudo apt install lcov valgrind
+          ./ci/test.sh $GITHUB_WORKSPACE
+
+      - name: Valgrind Memory check (x86_64 only)
+        if: ${{ (env.TARGET == 'x86_64') && (X86_64_RUN_UNIT_TESTS_WITH_VALGRIND) }}
+        run: |
+          cd ./scripts/
+          ./check-memory.sh
+          cd -
