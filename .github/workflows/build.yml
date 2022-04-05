@@ -40,7 +40,7 @@ jobs:
         if: ${{ github.base_ref == 'main' }}
         run: |
           sudo apt install valgrind
-          X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
+          env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
           echo "Installed valgrind"
 
       - name: Tests & Coverage Generation (x86_64 only)
