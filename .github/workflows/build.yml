@@ -37,7 +37,7 @@ jobs:
           echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
 
       - name: Install Valgrind
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.base_ref == 'dev' }}
         run: |
           sudo apt install valgrind
           X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
