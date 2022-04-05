@@ -10,6 +10,7 @@ on:
 env:
   X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
   BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
+  X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: false
 
 jobs:
   build:
@@ -35,17 +36,19 @@ jobs:
           echo "CROSS=${{ matrix.compiler }}" >> $GITHUB_ENV
           echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
 
+      - name: Install Valgrind
+        if: ${{ github.base_ref == 'main' && env.target == 'x86_64' }}
+        run: |
+          sudo apt install valgrind
+          X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
+          echo "Installed valgrind"
+
       - name: Tests & Coverage Generation (x86_64 only)
-#        if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
-#
         if: ${{ env.TARGET == 'x86_64' }}
         run: |
-          sudo apt install lcov valgrind
-          ./ci/test.sh $GITHUB_WORKSPACE
+          echo "Run tests from here"
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ (env.TARGET == 'x86_64') && (X86_64_RUN_UNIT_TESTS_WITH_VALGRIND) }}
+        if: ${{ X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}
         run: |
-          cd ./scripts/
-          ./check-memory.sh
-          cd -
+          echo "Check xml from here"
