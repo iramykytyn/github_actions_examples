@@ -10,7 +10,7 @@ on:
 env:
   X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
   BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
-  X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: ${{ github.base_ref == 'main' }}
+  X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: ${{ github.base_ref == 'dev' }}
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
 
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true' }}
+        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true') && (env.TARGET == 'x86_64') }}
         run: |
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
           echo "Check xml from here"
