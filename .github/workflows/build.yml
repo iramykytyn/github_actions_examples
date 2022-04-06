@@ -37,9 +37,8 @@ jobs:
           echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
 
-
       - name: Install Valgrind
-        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == `true`) && (env.TARGET == 'x86_64') }}
+        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true') && (env.TARGET == 'x86_64') }}
         run: |
           sudo apt install valgrind
           echo "Installed valgrind"
