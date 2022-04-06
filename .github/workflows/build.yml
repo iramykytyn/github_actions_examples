@@ -49,8 +49,11 @@ jobs:
         if: ${{ env.TARGET == 'x86_64' }}
         run: |
           echo "Run tests from here"
+          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
+
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true'}}
+        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}
         run: |
+          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
           echo "Check xml from here"
