@@ -35,7 +35,6 @@ jobs:
           sudo apt install -y libev-dev
           echo "CROSS=${{ matrix.compiler }}" >> $GITHUB_ENV
           echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
-          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
 
       - name: Install Valgrind
         if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true') && (env.TARGET == 'x86_64') }}
@@ -52,7 +51,7 @@ jobs:
 
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == true }}
+        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true' }}
         run: |
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
           echo "Check xml from here"
