@@ -37,13 +37,11 @@ jobs:
           echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
 
       - name: Install Valgrind
-        if: ${{ (github.base_ref == 'main')  && (env.TARGET == 'x86_64') }}
+        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == true) && (env.TARGET == 'x86_64') }}
         run: |
           sudo apt install valgrind
           echo "Installed valgrind"
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
-        env:
-          X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: true
 
       - name: Tests & Coverage Generation (x86_64 only)
         if: ${{ env.TARGET == 'x86_64' }}
@@ -53,7 +51,7 @@ jobs:
 
 
       - name: Valgrind Memory check (x86_64 only)
-        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}
+        if: ${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == true }}
         run: |
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
           echo "Check xml from here"
