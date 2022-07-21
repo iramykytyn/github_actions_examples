@@ -60,11 +60,11 @@ jobs:
   check-secret:
     runs-on: ubuntu-20.04
     outputs:
-      my-key: ${{ steps.my-key.outputs.defined }}
+      my-key: ${{ env.MY_KEY }}
     steps:
       - id: my-key
         env:
-          MY_KEY: true #${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
+          MY_KEY: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
         if: "${{ env.MY_KEY == 'true' }}"
         run: |
           echo "::set-output name=defined::true"
