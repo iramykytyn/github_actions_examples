@@ -11,7 +11,7 @@ env:
   X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
   BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
   X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: ${{ github.base_ref == 'main' }}
-  X86_64_RUN_FUNCTIONAL_TESTS: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }} # Run functional tests
+  X86_64_RUN_FUNCTIONAL_TESTS: ${{ (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }} # Run functional tests
   
 
 jobs:
@@ -77,7 +77,6 @@ jobs:
     name: Functional Test
     runs-on: ubuntu-20.04
     needs: [check-secret, build]   # Wait for build job to finish
-    # if: "${{ needs.check-secret.outputs.my-key == 'true' }}"
     strategy:
       fail-fast: false
       matrix:
@@ -86,6 +85,7 @@ jobs:
           - test: crad_scenario_2
           - test: crad_scenario_monkey_test
         
+    if: ${{ needs.check-secret.outputs.my-key == 'true' }}
     steps:
       - name: Set up environment
         run: |
