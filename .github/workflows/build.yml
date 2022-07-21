@@ -73,7 +73,7 @@ jobs:
   job_functional_test:
     name: Functional Test
     runs-on: ubuntu-20.04
-    needs: [check-secret, job_build]   # Wait for build job to finish
+    needs: [check-secret, build]   # Wait for build job to finish
     if: needs.check-secret.outputs.my-key == 'true'
     strategy:
       fail-fast: false
