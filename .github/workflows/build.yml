@@ -55,3 +55,35 @@ jobs:
         run: |
           echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
           echo "Check xml from here"
+
+
+  check-secret:
+    runs-on: ubuntu-20.04
+    outputs:
+      my-key: ${{ steps.my-key.outputs.defined }}
+    steps:
+      - id: my-key
+        env:
+          MY_KEY: true #${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
+        if: "${{ env.MY_KEY == 'true' }}"
+        run: |
+          echo "::set-output name=defined::true"
+          echo "${{ steps.my-key.outputs.defined }}"
+
+  job_functional_test:
+    name: Functional Test
+    runs-on: ubuntu-20.04
+    needs: [check-secret, job_build]   # Wait for build job to finish
+    if: needs.check-secret.outputs.my-key == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: crad_scenario_1
+          - test: crad_scenario_2
+          - test: crad_scenario_monkey_test
+        
+    steps:
+      - name: Set up environment
+        run: |
+          echo "Step is RUN"
