@@ -90,4 +90,4 @@ jobs:
       - name: Set up environment
         run: |
           echo "Step is RUN"
-          echo ${{ needs.check-secret.outputs.my-key }}
+          echo ${{needs.check-secret.outputs.my-key}}
