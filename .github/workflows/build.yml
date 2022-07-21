@@ -60,7 +60,7 @@ jobs:
   check-secret:
     runs-on: ubuntu-20.04
     outputs:
-      my-key: ${{ env.MY_KEY }}
+      my-key: ${{ steps.my-key.outputs.defined }}
     steps:
       - id: my-key
         env:
