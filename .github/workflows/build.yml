@@ -67,7 +67,7 @@ jobs:
       - id: my-key
         env:
           MY_KEY: ${{ env.X86_64_RUN_FUNCTIONAL_TESTS }}
-        # if: "${{ env.MY_KEY == true }}"
+        if: "${{ env.MY_KEY == true }}"
         run: |
           echo "::set-output name=defined::true"
           echo "${{ env.MY_KEY  }}"
