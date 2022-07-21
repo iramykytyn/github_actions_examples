@@ -11,6 +11,8 @@ env:
   X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
   BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
   X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: ${{ github.base_ref == 'main' }}
+  X86_64_RUN_FUNCTIONAL_TESTS: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }} # Run functional tests
+  
 
 jobs:
   build:
@@ -64,11 +66,11 @@ jobs:
     steps:
       - id: my-key
         env:
-          MY_KEY: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
+          MY_KEY: ${{ env.X86_64_RUN_FUNCTIONAL_TESTS }}
         # if: "${{ env.MY_KEY == true }}"
         run: |
           echo "::set-output name=defined::true"
-          echo "${{ env.MY_KEY == true }}"
+          echo "${{ env.MY_KEY  }}"
           echo "${{ steps.my-key.outputs.defined }}"
 
   job_functional_test:
