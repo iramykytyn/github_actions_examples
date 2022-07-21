@@ -65,9 +65,10 @@ jobs:
       - id: my-key
         env:
           MY_KEY: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
-        if: "${{ env.MY_KEY == true }}"
+        # if: "${{ env.MY_KEY == true }}"
         run: |
           echo "::set-output name=defined::true"
+          echo "${{ env.MY_KEY == true }}"
           echo "${{ steps.my-key.outputs.defined }}"
 
   job_functional_test:
