@@ -77,15 +77,15 @@ jobs:
     name: Functional Test
     runs-on: ubuntu-20.04
     needs: [check-secret, build]   # Wait for build job to finish
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     include:
-    #       - test: crad_scenario_1
-    #       - test: crad_scenario_2
-    #       - test: crad_scenario_monkey_test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: crad_scenario_1
+          - test: crad_scenario_2
+          - test: crad_scenario_monkey_test
         
-    if: ${{ needs.check-secret.outputs.my-key == 'true' }}
+    if: ${{ needs.check-secret.outputs.my-key != '' }}
     steps:
       - name: Set up environment
         run: |
