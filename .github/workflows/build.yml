@@ -1,0 +1,84 @@
+name: "Linux SDK Build"
+
+on:
+  pull_request:
+    types: [ labeled ]
+  push:
+    branches:
+      - main
+      - dev
+
+env:
+  X86_64_ARCHIVE_FILE_REBUILD: 0 # 1 = Triggers rebuiling of external libs
+  BUILD_OUTPUT_VERBOSE: 1 # 1 = Print build output to stdio instead of redirection to a log file
+  X86_64_RUN_UNIT_TESTS_WITH_VALGRIND: ${{ github.base_ref == 'main' }}
+  X86_64_RUN_FUNCTIONAL_TESTS: ${{ (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }} # Run functional tests
+  
+
+jobs:
+  build:
+    name: "Build SDK"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64
+          - target: arm64-v8a
+            compiler: aarch64-linux-gnu
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+
+      - name: Set up environment
+        run: |
+          sudo apt update
+          sudo apt install -y libev-dev
+          echo "CROSS=${{ matrix.compiler }}" >> $GITHUB_ENV
+          echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
+
+      - name: Install Valgrind
+        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true') && (env.TARGET == 'x86_64') }}
+        run: |
+          sudo apt install valgrind
+          echo "Installed valgrind"
+          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
+
+      - name: Tests & Coverage Generation (x86_64 only)
+        if: ${{ env.TARGET == 'x86_64' }}
+        run: |
+          echo "Run tests from here"
+          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
+
+
+      - name: Valgrind Memory check (x86_64 only)
+        if: ${{ (env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND == 'true') && (env.TARGET == 'x86_64') }}
+        run: |
+          echo "${{ env.X86_64_RUN_UNIT_TESTS_WITH_VALGRIND }}"
+          echo "Check xml from here"
+
+
+  check-secret:
+    runs-on: ubuntu-20.04
+    steps:
+        if: contains(github.event.pull_request.labels.*.name, 'deploy') 
+
+  job_functional_test:
+    name: Functional Test
+    runs-on: ubuntu-20.04
+    needs: [build, check-secret]   # Wait for build job to finish
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: crad_scenario_1
+          - test: crad_scenario_2
+          - test: crad_scenario_monkey_test
+        
+    steps:
+      - name: Set up environment
+        run: |
+          echo "Step is RUN"
+          echo ${{needs.check-secret.outputs.my-key}}
