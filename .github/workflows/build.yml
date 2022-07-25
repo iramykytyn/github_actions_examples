@@ -62,23 +62,13 @@ jobs:
 
   check-secret:
     runs-on: ubuntu-20.04
-    outputs:
-      my-key: ${{ steps.my-key.outputs.defined }}
     steps:
-      - id: my-key
-        env:
-          MY_KEY: ${{ (github.base_ref == 'master') || (secrets.X86_64_RUN_FUNCTIONAL_TESTS == 'true') }}
-        if: "${{ env.MY_KEY == 'true' }}"
-        run: |
-          echo "::set-output name=defined::true"
-          echo "${{ env.MY_KEY  }}"
-          echo "${{ steps.my-key.outputs.defined }}"
+        if: contains(github.event.pull_request.labels.*.name, 'deploy') 
 
   job_functional_test:
-    if: contains(github.event.pull_request.labels.*.name, 'bug') 
     name: Functional Test
     runs-on: ubuntu-20.04
-    needs: [build]   # Wait for build job to finish
+    needs: [build, check-secret]   # Wait for build job to finish
     strategy:
       fail-fast: false
       matrix:
