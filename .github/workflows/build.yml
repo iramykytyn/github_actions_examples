@@ -75,24 +75,13 @@ jobs:
           echo "${{ steps.my-key.outputs.defined }}"
 
   job_functional_test:
-    # if: contains(github.event.pull_request.labels.*.name, 'bug') 
+    if: contains(github.event.pull_request.labels.*.name, 'bug') 
     name: Functional Test
     runs-on: ubuntu-20.04
     needs: [build]   # Wait for build job to finish
     strategy:
       fail-fast: false
       matrix:
-        run: |
-          echo "TARGET=x86_64" >> $GITHUB_ENV
-          echo "TEST_FILE_NAME=${{ matrix.test }}" >> $GITHUB_ENV
-          # Check if we need to run functional tests based on PR title
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          echo "RUN_FUNCTIONAL_TESTS=false" >> $GITHUB_ENV
-          if [[ $PR_TITLE == \[RFT\]* ]]; then
-            echo "################# $PR TITLE: $PR_TITLE #################"
-            echo "Running functional tests only since PR title starts with [RFT]..."
-            echo "RUN_FUNCTIONAL_TESTS=true" >> $GITHUB_ENV
-          fi
         include:
           - test: crad_scenario_1
           - test: crad_scenario_2
