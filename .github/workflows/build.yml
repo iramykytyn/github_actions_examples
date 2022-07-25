@@ -75,7 +75,7 @@ jobs:
           echo "${{ steps.my-key.outputs.defined }}"
 
   job_functional_test:
-    if: ${{ github.event.label.name == 'bug' }}
+    if: contains(github.event.pull_request.labels.*.name, 'bug') 
     name: Functional Test
     runs-on: ubuntu-20.04
     needs: [build]   # Wait for build job to finish
